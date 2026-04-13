@@ -395,3 +395,61 @@
 .kwami-cfg-color .kwami-colorpicker-popup {
   z-index: 1100;
 }
+
+/* Configurator actions bar */
+.kwami-button-configurator-actions {
+  display: flex;
+  justify-content: center;
+  padding: 0.75rem 0 0.25rem;
+  margin-top: 0.5rem;
+  border-top: 1px solid var(--kwami-shadow-dark, rgba(163, 177, 198, 0.4));
+  width: 100%;
+}
+
+.kwami-cfg-reset-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.25rem;
+  border: none;
+  border-radius: 12px;
+  background: var(--kwami-surface, #e0e5ec);
+  box-shadow:
+    4px 4px 8px var(--kwami-shadow-dark, rgba(163, 177, 198, 0.6)),
+    -4px -4px 8px var(--kwami-shadow-light, rgba(255, 255, 255, 0.8));
+  color: var(--kwami-text-secondary, #888);
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.kwami-cfg-reset-btn:hover {
+  color: var(--kwami-accent, #ff9500);
+  transform: translateY(-2px);
+  box-shadow:
+    6px 6px 12px var(--kwami-shadow-dark, rgba(163, 177, 198, 0.6)),
+    -6px -6px 12px var(--kwami-shadow-light, rgba(255, 255, 255, 0.8));
+}
+
+.kwami-cfg-reset-btn:active {
+  transform: translateY(0);
+  box-shadow:
+    inset 2px 2px 5px var(--kwami-shadow-dark, rgba(163, 177, 198, 0.6)),
+    inset -2px -2px 5px var(--kwami-shadow-light, rgba(255, 255, 255, 0.8));
+}
+
+.kwami-cfg-reset-btn iconify-icon {
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.kwami-cfg-reset-btn:hover iconify-icon {
+  transform: rotate(-360deg);
+}
+
+.kwami-cfg-reset-btn span {
+  position: relative;
+  top: 1px;
+}

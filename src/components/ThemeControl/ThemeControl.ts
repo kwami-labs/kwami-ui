@@ -199,6 +199,12 @@ export class ThemeControl extends Component<ThemeControlProps> {
                 `
         : ''
     }
+    <div class="kwami-theme-control-item kwami-theme-control-reset">
+     ${showLabels ? `<span class="kwami-theme-control-label">Reset</span>` : ''}
+     <button class="kwami-reset-btn" title="Reset to defaults">
+      <iconify-icon icon="solar:restart-bold" width="18" height="18"></iconify-icon>
+     </button>
+    </div>
                 ${
                   colorPickersHtml
                     ? `
@@ -252,6 +258,14 @@ export class ThemeControl extends Component<ThemeControlProps> {
         this.onConfigChange();
         this.updateColorPickerValues();
         this.updateColorPickerDefaults();
+      });
+    }
+
+    // Reset button listener
+    const resetBtn = this.element?.querySelector('.kwami-reset-btn');
+    if (resetBtn) {
+      this.addListener(resetBtn, 'click', () => {
+        this.reset();
       });
     }
 
@@ -391,7 +405,13 @@ export class ThemeControl extends Component<ThemeControlProps> {
 
   /** Reset to default configuration */
   reset(): void {
-    this.config = { ...defaultThemeControlConfig };
+    this.config = {
+      mode: defaultThemeControlConfig.mode,
+      colors: {
+        light: { ...defaultThemeControlConfig.colors.light },
+        dark: { ...defaultThemeControlConfig.colors.dark },
+      },
+    };
     this.onConfigChange();
     this.updateColorPickerValues();
 

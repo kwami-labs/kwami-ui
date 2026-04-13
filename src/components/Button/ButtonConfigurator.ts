@@ -161,6 +161,14 @@ export class ButtonConfigurator extends Component<ButtonConfiguratorProps> {
   ${this.renderHighlightPanel()}
   ${this.renderTextPanel()}
   </div>
+  
+  <!-- Configurator Actions -->
+  <div class="kwami-button-configurator-actions">
+  <button class="kwami-cfg-reset-btn" title="Reset all styles to defaults">
+   <iconify-icon icon="solar:restart-bold" width="14" height="14"></iconify-icon>
+   <span>Reset Defaults</span>
+  </button>
+  </div>
  </div>
       `;
   }
@@ -346,8 +354,22 @@ export class ButtonConfigurator extends Component<ButtonConfiguratorProps> {
     // Setup style controls (size selector in colors panel)
     this.setupStyleControls();
 
+    // Setup actions
+    this.setupActions();
+
     // Initial highlight
     this.highlightPart('colors');
+  }
+
+  private setupActions(): void {
+    if (!this.element) return;
+
+    const resetBtn = this.element.querySelector('.kwami-cfg-reset-btn');
+    if (resetBtn) {
+      this.addListener(resetBtn, 'click', () => {
+        this.reset();
+      });
+    }
   }
 
   private setupVariantSelector(): void {
@@ -687,8 +709,90 @@ export class ButtonConfigurator extends Component<ButtonConfiguratorProps> {
   /** Set configuration programmatically */
   setConfiguration(config: Partial<ButtonConfiguration>): void {
     this.config = { ...this.config, ...config };
-    // Apply all config changes to the DOM
-    // This would require re-rendering or updating all elements
+    this.applyConfiguration(this.config);
+    this.emitChange();
+  }
+
+  /** Reset configuration to defaults */
+  reset(): void {
+    this.config = {
+      ...DEFAULT_CONFIG,
+      bezel: { ...DEFAULT_CONFIG.bezel },
+      face: { ...DEFAULT_CONFIG.face },
+      highlight: { ...DEFAULT_CONFIG.highlight },
+      text: { ...DEFAULT_CONFIG.text },
+    };
+    this.applyConfiguration(this.config);
+    this.emitChange();
+
+    // Reset part selector to colors
+    const colorsTab = this.element?.querySelector(
+      '.kwami-button-configurator-part-btn[data-part="colors"]'
+    ) as HTMLElement;
+    colorsTab?.click();
+  }
+
+  /** Apply current configuration to the UI and preview */
+  private applyConfiguration(config: ButtonConfiguration): void {
+    if (!this.element) return;
+
+    // Update Preview Button Label
+    const textInput = this.element.querySelector(
+      '.kwami-cfg-input[data-prop="text-content"]'
+    ) as HTMLInputElement;
+    if (textInput) textInput.value = config.label;
+    if (this.textEl) this.textEl.textContent = config.label;
+
+    // Update Variant Bar
+    const variantBtns = this.element.querySelectorAll('.kwami-cfg-variant-btn');
+    variantBtns.forEach((btn) => {
+      btn.classList.toggle('active', btn.getAttribute('data-variant') === config.variant);
+    });
+    this.updateButtonVariant(config.variant);
+
+    // Update Size Selector
+    const sizeSelect = this.element.querySelector(
+      '.kwami-cfg-select[data-prop="size"]'
+    ) as HTMLSelectElement;
+    if (sizeSelect) sizeSelect.value = config.size;
+    this.updateButtonSize(config.size);
+
+    // Update Color Pickers
+    const colorTargets = ['bezel', 'face', 'highlight', 'text'] as const;
+    colorTargets.forEach((target) => {
+      const picker = this.colorPickers.get(target);
+      const color = this.getColorForTarget(target);
+      if (picker) {
+        picker.setColor(color);
+        this.handleColorChange(target, color);
+      }
+    });
+
+    // Update Sliders
+    const slidersSpecs = [
+      { prop: 'bezel-radius', val: config.bezel.radius },
+      { prop: 'bezel-padding', val: config.bezel.padding },
+      { prop: 'bezel-shadow', val: config.bezel.shadowDepth },
+      { prop: 'face-radius', val: config.face.radius },
+      { prop: 'face-depth', val: config.face.depth },
+      { prop: 'face-brightness', val: config.face.brightness },
+      { prop: 'highlight-opacity', val: config.highlight.opacity },
+      { prop: 'highlight-height', val: config.highlight.height },
+      { prop: 'text-size', val: config.text.size },
+      { prop: 'text-spacing', val: config.text.spacing },
+      { prop: 'text-weight', val: config.text.weight },
+    ];
+
+    slidersSpecs.forEach((spec) => {
+      const slider = this.element?.querySelector(
+        `.kwami-cfg-slider[data-prop="${spec.prop}"]`
+      ) as HTMLInputElement;
+      if (slider) {
+        slider.value = spec.val.toString();
+        const valueSpan = slider.parentElement?.querySelector('.kwami-cfg-value');
+        this.handleSliderChange(spec.prop, spec.val, valueSpan as HTMLElement | null);
+      }
+    });
   }
 }
 

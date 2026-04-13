@@ -194,3 +194,53 @@
     background 0.3s ease,
     box-shadow 0.3s ease;
 }
+
+/* Reset button styling */
+.kwami-reset-btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background: var(--kwami-surface);
+  box-shadow:
+    3px 3px 6px var(--kwami-shadow-dark),
+    -3px -3px 6px var(--kwami-shadow-light);
+  color: var(--kwami-text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.kwami-reset-btn:hover {
+  color: var(--kwami-accent);
+  transform: rotate(-30deg);
+}
+
+.kwami-reset-btn:active {
+  box-shadow:
+    inset 2px 2px 5px var(--kwami-shadow-dark),
+    inset -2px -2px 5px var(--kwami-shadow-light);
+  transform: scale(0.95);
+}
+
+.kwami-theme-control-reset {
+  margin-left: auto;
+  border-left: 1px solid var(--kwami-shadow-dark);
+  padding-left: 1.5rem;
+}
+
+.kwami-theme-control-vertical .kwami-theme-control-reset {
+  margin-left: 0;
+  border-left: none;
+  padding-left: 0;
+  border-top: 1px solid var(--kwami-shadow-dark);
+  padding-top: 1rem;
+}
+
+/* Compact adjustments */
+.kwami-theme-control.compact .kwami-reset-btn {
+  width: 32px;
+  height: 32px;
+}
