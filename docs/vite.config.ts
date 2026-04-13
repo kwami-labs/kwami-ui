@@ -4,8 +4,7 @@ import { resolve } from 'path';
 export default defineConfig({
   resolve: {
     alias: {
-      '@kwami/ui/dist': resolve(__dirname, '../dist'),
-      '@kwami/ui': resolve(__dirname, '..'),
+      '@kwami/ui': resolve(__dirname, '../src/index.ts'),
     },
   },
   server: {

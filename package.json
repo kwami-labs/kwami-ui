@@ -23,8 +23,8 @@
   "scripts": {
     "dev": "vite build --watch",
     "build": "tsc && vite build",
-    "dev:docs": "npm run dev -w docs -- --port 3000",
-    "build:docs": "npm run build -w docs",
+    "dev:docs": "pnpm --dir docs dev -- --port 3000",
+    "build:docs": "pnpm --dir docs build",
     "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
     "lint:fix": "eslint . --ext .ts,.tsx,.js,.jsx --fix",
     "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,css,json}\" \"docs/src/**/*.{ts,tsx,js,jsx,css,json}\"",

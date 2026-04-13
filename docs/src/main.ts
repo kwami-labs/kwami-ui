@@ -1,7 +1,6 @@
 import './style.css';
 import './components/Button/ButtonDocs.css';
 import './components/CodeBlock/CodeBlock.css';
-import '@kwami/ui/dist/style.css';
 import 'iconify-icon';
 
 import {

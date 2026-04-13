@@ -20,7 +20,6 @@ export interface CodeBlockProps {
 
 export class CodeBlock {
   private props: CodeBlockProps;
-  private element: HTMLElement | null = null;
   private copyBtn: HTMLButtonElement | null = null;
 
   constructor(props: CodeBlockProps) {
@@ -62,7 +61,6 @@ export class CodeBlock {
   }
 
   hydrate(element: HTMLElement): void {
-    this.element = element;
     this.copyBtn = element.querySelector('.kwami-code-copy');
 
     if (this.copyBtn) {
@@ -95,7 +93,6 @@ export class CodeBlock {
   }
 
   destroy(): void {
-    this.element = null;
     this.copyBtn = null;
   }
 }
