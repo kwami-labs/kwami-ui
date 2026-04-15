@@ -244,3 +244,137 @@
   width: 32px;
   height: 32px;
 }
+
+/* Background image controls group */
+.kwami-theme-control-image {
+  display: flex;
+  align-items: flex-end;
+  gap: 1.5rem;
+  padding-left: 1.5rem;
+  border-left: 1px solid var(--kwami-shadow-dark);
+}
+
+.kwami-theme-control-vertical .kwami-theme-control-image {
+  flex-direction: column;
+  padding-left: 0;
+  border-left: none;
+  border-top: 1px solid var(--kwami-shadow-dark);
+  padding-top: 1rem;
+  width: 100%;
+}
+
+.kwami-theme-control-image .kwami-theme-control-item[data-control='backgroundImage'] {
+  min-width: 180px;
+}
+
+.kwami-theme-control-image .kwami-theme-control-item[data-control='backgroundImageOpacity'] {
+  min-width: 120px;
+}
+
+/* Ensure slider and textinput fit well in the theme control */
+.kwami-theme-control .kwami-textinput-container,
+.kwami-theme-control .kwami-slider-container {
+  width: 100%;
+}
+
+.kwami-theme-control .kwami-textinput-bezel {
+  height: 36px;
+  display: flex;
+  align-items: center;
+}
+
+.kwami-theme-control .kwami-textinput {
+  font-size: 0.75rem;
+  padding: 0 0.5rem;
+}
+
+.kwami-theme-control .kwami-slider-bezel {
+  height: 24px;
+}
+  top: -6px;
+  right: -6px;
+  width: 18px;
+  height: 18px;
+  z-index: 20;
+}
+
+.kwami-theme-control-remove-btn:hover {
+  color: #ff4d4d;
+}
+
+.kwami-theme-control-add-btn {
+  width: 28px;
+  height: 28px;
+}
+
+.kwami-theme-control-picker-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 36px;
+  height: 36px;
+}
+
+.kwami-remove-accent-btn:hover {
+  opacity: 1;
+  color: #ff4d4d;
+  background: rgba(255, 77, 77, 0.1);
+  transform: scale(1.1);
+}
+
+.kwami-remove-accent-btn:hover {
+  opacity: 1;
+  background: rgba(255, 68, 68, 0.1);
+  transform: scale(1.2);
+}
+
+.kwami-theme-control-reset {
+  margin-left: 0;
+  border-left: none;
+  padding-left: 0;
+}
+
+/* Compact adjustments */
+.kwami-theme-control.compact .kwami-reset-btn {
+  width: 32px;
+  height: 32px;
+}
+
+/* Background image controls group */
+.kwami-theme-control-image {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-left: 0;
+  border-left: none;
+}
+
+.kwami-theme-control-image .kwami-theme-control-item[data-control='backgroundImage'] {
+  width: 100%;
+}
+
+.kwami-theme-control-image .kwami-theme-control-item[data-control='backgroundImageOpacity'] {
+  width: 100%;
+}
+
+/* Ensure slider and textinput fit well in the theme control */
+.kwami-theme-control .kwami-textinput-container,
+.kwami-theme-control .kwami-slider-container {
+  width: 100%;
+}
+
+.kwami-theme-control .kwami-textinput-bezel {
+  height: 36px;
+  display: flex;
+  align-items: center;
+}
+
+.kwami-theme-control .kwami-textinput {
+  font-size: 0.75rem;
+  padding: 0 0.5rem;
+}
+
+.kwami-theme-control .kwami-slider-bezel {
+  height: 24px;
+}

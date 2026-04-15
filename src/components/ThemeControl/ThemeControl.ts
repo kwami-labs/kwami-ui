@@ -1,19 +1,23 @@
 import { Component } from '../../core/Component';
 import { ColorPicker } from '../ColorPicker/ColorPicker';
 import { Toggle } from '../Toggle/Toggle';
+import { TextInput } from '../TextInput/TextInput';
+import { Slider } from '../Slider/Slider';
 import './ThemeControl.css';
 
 export interface ThemeControlColors {
-  /** Primary accent color */
-  primary: string;
-  /** Secondary accent color */
-  secondary: string;
+  /** Accent colors (1-5) */
+  accents: string[];
   /** Background/surface color */
   background: string;
   /** Dark shadow color for neumorphic effect */
   shadow: string;
   /** Light shadow color for neumorphic effect */
   light: string;
+  /** Optional background image URL */
+  backgroundImage?: string;
+  /** Opacity of the background image (0-100) */
+  backgroundImageOpacity?: number;
 }
 
 export interface ThemeControlConfig {
@@ -28,7 +32,16 @@ export interface ThemeControlProps {
   /** Initial theme configuration */
   config?: Partial<ThemeControlConfig>;
   /** Controls to show. Defaults to all controls. */
-  controls?: ('mode' | 'primary' | 'secondary' | 'background' | 'shadow' | 'light')[];
+  controls?: (
+    | 'mode'
+    | 'primary'
+    | 'secondary'
+    | 'background'
+    | 'shadow'
+    | 'light'
+    | 'backgroundImage'
+    | 'backgroundImageOpacity'
+  )[];
   /** Layout direction */
   layout?: 'horizontal' | 'vertical';
   /** Show labels for color pickers */
@@ -40,19 +53,21 @@ export interface ThemeControlProps {
 }
 
 const defaultColors: ThemeControlColors = {
-  primary: '#ff9500',
-  secondary: '#5856d6',
+  accents: ['#ff9500', '#5856d6'],
   background: '#1e1e1e',
   shadow: 'rgba(0, 0, 0, 0.5)',
   light: 'rgba(255, 255, 255, 0.03)',
+  backgroundImage: '',
+  backgroundImageOpacity: 100,
 };
 
 const defaultLightColors: ThemeControlColors = {
-  primary: '#ff9500',
-  secondary: '#007aff',
+  accents: ['#ff9500', '#007aff'],
   background: '#e0e5ec',
   shadow: 'rgba(163, 177, 198, 0.6)',
   light: 'rgba(255, 255, 255, 0.8)',
+  backgroundImage: '',
+  backgroundImageOpacity: 100,
 };
 
 export const defaultThemeControlConfig: ThemeControlConfig = {
@@ -67,6 +82,8 @@ export class ThemeControl extends Component<ThemeControlProps> {
   private config: ThemeControlConfig;
   private toggle: Toggle | null = null;
   private colorPickers: Map<string, ColorPicker> = new Map();
+  private bgImageInput: TextInput | null = null;
+  private bgOpacitySlider: Slider | null = null;
   private systemThemeListener: (() => void) | null = null;
 
   constructor(props: ThemeControlProps = {}) {
@@ -105,8 +122,16 @@ export class ThemeControl extends Component<ThemeControlProps> {
     return {
       mode: override.mode ?? base.mode,
       colors: {
-        light: { ...base.colors.light, ...override.colors?.light },
-        dark: { ...base.colors.dark, ...override.colors?.dark },
+        light: { 
+          ...base.colors.light, 
+          ...override.colors?.light,
+          accents: override.colors?.light?.accents ? [...override.colors.light.accents] : [...base.colors.light.accents]
+        },
+        dark: { 
+          ...base.colors.dark, 
+          ...override.colors?.dark,
+          accents: override.colors?.dark?.accents ? [...override.colors.dark.accents] : [...base.colors.dark.accents]
+        },
       },
     };
   }
@@ -130,7 +155,18 @@ export class ThemeControl extends Component<ThemeControlProps> {
   }
 
   private getControls(): string[] {
-    return this.props.controls || ['mode', 'primary', 'secondary', 'background', 'shadow', 'light'];
+    return (
+      this.props.controls || [
+        'mode',
+        'primary',
+        'secondary',
+        'background',
+        'shadow',
+        'light',
+        'backgroundImage',
+        'backgroundImageOpacity',
+      ]
+    );
   }
 
   render(): string {
@@ -166,8 +202,9 @@ export class ThemeControl extends Component<ThemeControlProps> {
     let colorPickersHtml = '';
     for (const { key, label } of colorControls) {
       if (controls.includes(key)) {
+        const value = colors[key];
         const picker = new ColorPicker({
-          defaultColor: colors[key],
+          defaultColor: typeof value === 'string' ? value : undefined,
           popupDirection: 'down',
           showRandomize: true,
           showReset: true,
@@ -175,7 +212,10 @@ export class ThemeControl extends Component<ThemeControlProps> {
           showOpacity: true,
         });
         // Set the default color for reset
-        picker.setDefaultColor(defaultColorsForMode[key]);
+        const defaultColor = defaultColorsForMode[key];
+        if (typeof defaultColor === 'string') {
+          picker.setDefaultColor(defaultColor);
+        }
         this.colorPickers.set(key, picker);
 
         colorPickersHtml += `
@@ -185,6 +225,37 @@ export class ThemeControl extends Component<ThemeControlProps> {
      </div>
                 `;
       }
+    }
+
+    // Create background image control
+    let backgroundImageHtml = '';
+    if (controls.includes('backgroundImage')) {
+      this.bgImageInput = new TextInput({
+        value: colors.backgroundImage || '',
+        placeholder: 'Image URL...',
+        label: 'BG IMAGE',
+      });
+      backgroundImageHtml = `
+                <div class="kwami-theme-control-item" data-control="backgroundImage">
+                    ${this.bgImageInput.render()}
+                </div>
+            `;
+    }
+
+    // Create background opacity control
+    let backgroundOpacityHtml = '';
+    if (controls.includes('backgroundImageOpacity')) {
+      this.bgOpacitySlider = new Slider({
+        value: colors.backgroundImageOpacity ?? 100,
+        min: 0,
+        max: 100,
+        label: 'BG OPACITY',
+      });
+      backgroundOpacityHtml = `
+                <div class="kwami-theme-control-item" data-control="backgroundImageOpacity">
+                    ${this.bgOpacitySlider.render()}
+                </div>
+            `;
     }
 
     return `
@@ -214,6 +285,16 @@ export class ThemeControl extends Component<ThemeControlProps> {
                 `
                     : ''
                 }
+                ${
+                  backgroundImageHtml || backgroundOpacityHtml
+                    ? `
+                    <div class="kwami-theme-control-image">
+                        ${backgroundImageHtml}
+                        ${backgroundOpacityHtml}
+                    </div>
+                `
+                    : ''
+                }
    </div>
         `;
   }
@@ -237,6 +318,26 @@ export class ThemeControl extends Component<ThemeControlProps> {
       }
     });
 
+    // Hydrate background image input
+    if (this.bgImageInput) {
+      const itemEl = this.element.querySelector(
+        '[data-control="backgroundImage"] .kwami-textinput-container'
+      );
+      if (itemEl) {
+        this.bgImageInput.hydrate(itemEl as HTMLElement);
+      }
+    }
+
+    // Hydrate background opacity slider
+    if (this.bgOpacitySlider) {
+      const itemEl = this.element.querySelector(
+        '[data-control="backgroundImageOpacity"] .kwami-slider-container'
+      );
+      if (itemEl) {
+        this.bgOpacitySlider.hydrate(itemEl as HTMLElement);
+      }
+    }
+
     // Setup event listeners
     this.setupEventListeners();
 
@@ -251,12 +352,12 @@ export class ThemeControl extends Component<ThemeControlProps> {
     // Mode toggle listener
     const toggleEl = this.element?.querySelector('.kwami-toggle');
     if (toggleEl) {
-      this.addListener(toggleEl, 'togglechange', (e) => {
+      this.addListener(toggleEl, 'togglechange', (e: Event) => {
         const detail = (e as CustomEvent).detail;
         const modes: ('light' | 'dark' | 'system')[] = ['light', 'dark', 'system'];
         this.config.mode = modes[detail.state];
         this.onConfigChange();
-        this.updateColorPickerValues();
+        this.updateControlValues();
         this.updateColorPickerDefaults();
       });
     }
@@ -270,20 +371,14 @@ export class ThemeControl extends Component<ThemeControlProps> {
     }
 
     // Color picker listeners
-    const colorKeys: (keyof ThemeControlColors)[] = [
-      'primary',
-      'secondary',
-      'background',
-      'shadow',
-      'light',
-    ];
+    const colorKeys = ['primary', 'secondary', 'background', 'shadow', 'light'] as const;
     colorKeys.forEach((key) => {
       const picker = this.colorPickers.get(key);
       if (picker) {
         const pickerEl = this.element?.querySelector(`[data-control="${key}"] .kwami-colorpicker`);
         if (pickerEl) {
           // Color change listener
-          this.addListener(pickerEl, 'colorchange', (e) => {
+          this.addListener(pickerEl, 'colorchange', (e: Event) => {
             const color = (e as CustomEvent).detail.color;
             const effectiveMode = this.getEffectiveMode();
             this.config.colors[effectiveMode][key] = color;
@@ -291,7 +386,7 @@ export class ThemeControl extends Component<ThemeControlProps> {
           });
 
           // Copy to opposite theme listener
-          this.addListener(pickerEl, 'copytoopposite', (e) => {
+          this.addListener(pickerEl, 'copytoopposite', (e: Event) => {
             const color = (e as CustomEvent).detail.color;
             const effectiveMode = this.getEffectiveMode();
             const oppositeMode = effectiveMode === 'light' ? 'dark' : 'light';
@@ -301,6 +396,35 @@ export class ThemeControl extends Component<ThemeControlProps> {
         }
       }
     });
+
+    // Background image URL listener
+    if (this.bgImageInput) {
+      const inputEl = this.element?.querySelector(
+        '[data-control="backgroundImage"] .kwami-textinput-container'
+      );
+      if (inputEl) {
+        this.addListener(inputEl, 'input', () => {
+          const effectiveMode = this.getEffectiveMode();
+          this.config.colors[effectiveMode].backgroundImage = this.bgImageInput?.getValue() || '';
+          this.onConfigChange();
+        });
+      }
+    }
+
+    // Background opacity listener
+    if (this.bgOpacitySlider) {
+      const sliderEl = this.element?.querySelector(
+        '[data-control="backgroundImageOpacity"] .kwami-slider-container'
+      );
+      if (sliderEl) {
+        this.addListener(sliderEl, 'sliderchange', (e: Event) => {
+          const value = (e as CustomEvent).detail.value;
+          const effectiveMode = this.getEffectiveMode();
+          this.config.colors[effectiveMode].backgroundImageOpacity = value;
+          this.onConfigChange();
+        });
+      }
+    }
   }
 
   /** Update color picker default colors when theme mode changes */
@@ -310,7 +434,10 @@ export class ThemeControl extends Component<ThemeControlProps> {
 
     this.colorPickers.forEach((picker, key) => {
       const colorKey = key as keyof ThemeControlColors;
-      picker.setDefaultColor(defaultColorsForMode[colorKey]);
+      const defaultColor = defaultColorsForMode[colorKey];
+      if (typeof defaultColor === 'string') {
+        picker.setDefaultColor(defaultColor);
+      }
     });
   }
 
@@ -319,23 +446,31 @@ export class ThemeControl extends Component<ThemeControlProps> {
       const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
       const handler = () => {
         this.applyTheme();
-        this.updateColorPickerValues();
+        this.updateControlValues();
       };
       mediaQuery.addEventListener('change', handler);
       this.systemThemeListener = () => mediaQuery.removeEventListener('change', handler);
     }
   }
 
-  private updateColorPickerValues(): void {
+  private updateControlValues(): void {
     const effectiveMode = this.getEffectiveMode();
     const colors = this.config.colors[effectiveMode];
 
     this.colorPickers.forEach((picker, key) => {
       const colorKey = key as keyof ThemeControlColors;
-      if (colors[colorKey]) {
-        picker.setColor(colors[colorKey]);
+      if (colors[colorKey] !== undefined) {
+        picker.setColor(colors[colorKey] as string);
       }
     });
+
+    if (this.bgImageInput && colors.backgroundImage !== undefined) {
+      this.bgImageInput.setValue(colors.backgroundImage);
+    }
+
+    if (this.bgOpacitySlider && colors.backgroundImageOpacity !== undefined) {
+      this.bgOpacitySlider.setValue(colors.backgroundImageOpacity);
+    }
   }
 
   private onConfigChange(): void {
@@ -370,6 +505,11 @@ export class ThemeControl extends Component<ThemeControlProps> {
     root.style.setProperty('--accent-primary', colors.primary);
     root.style.setProperty('--accent-secondary', colors.secondary);
     root.style.setProperty('--kwami-accent', colors.primary);
+    root.style.setProperty('--kwami-secondary', colors.secondary);
+    root.style.setProperty(
+      '--kwami-accent-gradient',
+      `linear-gradient(135deg, ${colors.primary}, ${colors.secondary})`
+    );
 
     // Apply background color
     root.style.setProperty('--kwami-bg', colors.background);
@@ -378,6 +518,19 @@ export class ThemeControl extends Component<ThemeControlProps> {
     // Apply shadow colors for neumorphic effect
     root.style.setProperty('--kwami-shadow-dark', colors.shadow);
     root.style.setProperty('--kwami-shadow-light', colors.light);
+
+    // Apply background image properties
+    if (colors.backgroundImage) {
+      root.style.setProperty('--kwami-bg-image', `url(${colors.backgroundImage})`);
+    } else {
+      root.style.setProperty('--kwami-bg-image', 'none');
+    }
+
+    if (colors.backgroundImageOpacity !== undefined) {
+      root.style.setProperty('--kwami-bg-image-opacity', (colors.backgroundImageOpacity / 100).toString());
+    } else {
+      root.style.setProperty('--kwami-bg-image-opacity', '1');
+    }
   }
 
   /** Get the current theme configuration */
@@ -389,7 +542,7 @@ export class ThemeControl extends Component<ThemeControlProps> {
   setConfig(config: Partial<ThemeControlConfig>): void {
     this.config = this.mergeConfig(this.config, config);
     this.onConfigChange();
-    this.updateColorPickerValues();
+    this.updateControlValues();
 
     // Update toggle if mode changed
     if (config.mode && this.toggle) {
@@ -413,7 +566,7 @@ export class ThemeControl extends Component<ThemeControlProps> {
       },
     };
     this.onConfigChange();
-    this.updateColorPickerValues();
+    this.updateControlValues();
 
     // Reset toggle
     if (this.toggle) {
@@ -427,6 +580,8 @@ export class ThemeControl extends Component<ThemeControlProps> {
       this.systemThemeListener();
     }
     this.colorPickers.forEach((picker) => picker.destroy());
+    this.bgImageInput?.destroy();
+    this.bgOpacitySlider?.destroy();
     this.toggle?.destroy();
     super.destroy();
   }
