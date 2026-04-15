@@ -14,8 +14,15 @@
  */
 
 :root {
-  /* Primary accent color */
+  /* Accent colors */
   --kwami-accent: #ff9500;
+  --kwami-secondary: #007aff;
+  --kwami-accent-1: var(--kwami-accent);
+  --kwami-accent-2: var(--kwami-secondary);
+  --kwami-accent-3: var(--kwami-secondary);
+  --kwami-accent-4: var(--kwami-secondary);
+  --kwami-accent-5: var(--kwami-secondary);
+  --kwami-accent-gradient: linear-gradient(135deg, var(--kwami-accent), var(--kwami-secondary));
 
   /* ============================
        LIGHT THEME (Default)
@@ -35,11 +42,39 @@
   --kwami-text: rgba(0, 0, 0, 0.85);
   --kwami-text-secondary: rgba(0, 0, 0, 0.55);
 
+  /* Background Image */
+  --kwami-bg-image: none;
+  --kwami-bg-image-opacity: 1;
+
   /* Typography */
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--kwami-bg);
+  position: relative;
+  z-index: 0;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: var(--kwami-bg-image);
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  opacity: var(--kwami-bg-image-opacity);
+  pointer-events: none;
+  z-index: -1;
 }
 
 /* ============================
