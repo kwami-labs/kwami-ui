@@ -146,14 +146,43 @@ export class Knob extends Component<KnobProps> {
 
     const leds = this.ledsContainer.querySelectorAll('.kwami-knob-led');
     const activeLeds = Math.round((value / 100) * 11);
+    
+    // Get current theme accents
+    const rootStyles = getComputedStyle(document.documentElement);
+    const accents: string[] = [];
+    for (let i = 1; i <= 5; i++) {
+        const color = rootStyles.getPropertyValue(`--kwami-accent-${i}`).trim();
+        if (color) accents.push(color);
+        else break;
+    }
 
     leds.forEach((led, index) => {
+      const ledEl = led as HTMLElement;
       if (index < activeLeds) {
-        led.classList.add('active');
+        ledEl.classList.add('active');
+        
+        // Calculate color for this LED position
+        if (accents.length > 0) {
+            const color = this.getInterpolatedColor(index, 11, accents);
+            ledEl.style.setProperty('--led-color', color);
+        }
       } else {
-        led.classList.remove('active');
+        ledEl.classList.remove('active');
+        ledEl.style.removeProperty('--led-color');
       }
     });
+  }
+
+  private getInterpolatedColor(index: number, total: number, colors: string[]): string {
+    if (colors.length === 0) return 'var(--kwami-accent)';
+    if (colors.length === 1) return colors[0];
+    
+    const percentage = index / (total - 1);
+    const segmentSize = 1 / (colors.length - 1);
+    const segmentIndex = Math.min(Math.floor(percentage / segmentSize), colors.length - 2);
+    const segmentPercentage = (percentage - (segmentIndex * segmentSize)) / segmentSize;
+    
+    return `color-mix(in srgb, ${colors[segmentIndex+1]} ${segmentPercentage * 100}%, ${colors[segmentIndex]})`;
   }
 
   private updateKnob(value: number): void {
@@ -162,6 +191,24 @@ export class Knob extends Component<KnobProps> {
 
     if (this.track) {
       this.track.style.transform = `rotate(${rotation}deg)`;
+    }
+
+    if (this.knobEl) {
+      this.knobEl.style.setProperty('--knob-value', this.currentValue.toFixed(2));
+      
+      // Also update indicator color based on value
+      const rootStyles = getComputedStyle(document.documentElement);
+      const accents: string[] = [];
+      for (let i = 1; i <= 5; i++) {
+          const color = rootStyles.getPropertyValue(`--kwami-accent-${i}`).trim();
+          if (color) accents.push(color);
+          else break;
+      }
+      
+      if (accents.length > 0) {
+          const indicatorColor = this.getInterpolatedColor(this.currentValue, 101, accents);
+          this.knobEl.style.setProperty('--indicator-color', indicatorColor);
+      }
     }
 
     this.knobEl?.setAttribute('data-value', this.currentValue.toString());
