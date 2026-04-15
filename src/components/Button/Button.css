@@ -379,12 +379,7 @@
    ============================================ */
 
 .kwami-button-bezel--primary {
-  --kwami-btn-bezel-bg: linear-gradient(
-    145deg,
-    #ffbe4d 0%,
-    #ff9500 50%,
-    #e68600 100%
-  );
+  --kwami-btn-bezel-bg: var(--kwami-accent-gradient);
   --kwami-btn-bezel-shadow: 
     inset 0 2px 6px rgba(0, 0, 0, 0.1),
     inset 0 -1px 3px rgba(255, 220, 150, 0.4),
@@ -392,14 +387,7 @@
 }
 
 .kwami-button-bezel--primary .kwami-button-face {
-  --kwami-btn-face-bg: linear-gradient(
-    165deg,
-    #ffcc70 0%,
-    #ffb84d 25%,
-    #ff9f1a 50%,
-    #ff9500 75%,
-    #e68600 100%
-  );
+  --kwami-btn-face-bg: var(--kwami-accent-gradient);
   --kwami-btn-face-shadow: 
     0 6px 24px rgba(255, 149, 0, 0.35),
     0 2px 8px rgba(255, 149, 0, 0.25),
@@ -422,14 +410,7 @@
 }
 
 .kwami-button-bezel--primary:hover .kwami-button-face {
-  --kwami-btn-face-bg: linear-gradient(
-    165deg,
-    #ffd480 0%,
-    #ffc266 25%,
-    #ffaa33 50%,
-    #ffa31a 75%,
-    #f09000 100%
-  );
+  --kwami-btn-face-bg: var(--kwami-accent-gradient);
   --kwami-btn-face-shadow: 
     0 8px 32px rgba(255, 149, 0, 0.45),
     0 3px 12px rgba(255, 149, 0, 0.35),
@@ -439,14 +420,7 @@
 
 .kwami-button-bezel--primary .kwami-button:active .kwami-button-face,
 .kwami-button-bezel--primary .kwami-button.pressed .kwami-button-face {
-  --kwami-btn-face-bg: linear-gradient(
-    165deg,
-    #e68600 0%,
-    #f09000 25%,
-    #ff9500 50%,
-    #ffaa33 75%,
-    #ffb84d 100%
-  );
+  --kwami-btn-face-bg: var(--kwami-accent-gradient);
   --kwami-btn-face-shadow: 
     0 2px 6px rgba(255, 149, 0, 0.2),
     inset 0 3px 10px rgba(0, 0, 0, 0.15),
@@ -455,12 +429,7 @@
 
 /* Primary - Dark Theme */
 [data-theme="dark"] .kwami-button-bezel--primary {
-  --kwami-btn-bezel-bg: linear-gradient(
-    145deg,
-    #8a5a00 0%,
-    #704a00 50%,
-    #5c3d00 100%
-  );
+  --kwami-btn-bezel-bg: var(--kwami-accent-gradient);
   --kwami-btn-bezel-shadow: 
     inset 0 2px 6px rgba(0, 0, 0, 0.4),
     inset 0 -1px 2px rgba(255, 180, 80, 0.08),
@@ -468,14 +437,7 @@
 }
 
 [data-theme="dark"] .kwami-button-bezel--primary .kwami-button-face {
-  --kwami-btn-face-bg: linear-gradient(
-    165deg,
-    #b87400 0%,
-    #a36600 25%,
-    #8a5500 50%,
-    #704500 75%,
-    #5c3800 100%
-  );
+  --kwami-btn-face-bg: var(--kwami-accent-gradient);
   --kwami-btn-face-shadow: 
     0 6px 24px rgba(0, 0, 0, 0.5),
     0 2px 8px rgba(0, 0, 0, 0.4),

@@ -59,11 +59,7 @@
   width: 4px;
   height: 50%;
   transform: translateX(-50%);
-  background: linear-gradient(
-    to top,
-    var(--kwami-accent, #ff9500),
-    color-mix(in srgb, var(--kwami-accent, #ff9500) 60%, white)
-  );
+  background: var(--kwami-accent-gradient);
   border-radius: 2px;
   box-shadow: 0 0 8px var(--kwami-accent, #ff9500);
   transition: height 0.05s ease;

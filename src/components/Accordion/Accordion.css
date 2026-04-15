@@ -62,5 +62,5 @@
   box-shadow:
     3px 3px 6px var(--kwami-shadow-dark, rgba(163, 177, 198, 0.6)),
     -3px -3px 6px var(--kwami-shadow-light, rgba(255, 255, 255, 0.8)),
-    inset 0 0 0 1px color-mix(in srgb, var(--kwami-accent, #ff9500) 20%, transparent);
+    inset 0 0 0 1.5px var(--kwami-accent-gradient);
 }

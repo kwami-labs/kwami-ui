@@ -46,7 +46,7 @@
 }
 
 .kwami-checkbox input:checked + .kwami-checkbox-box {
-  background: var(--kwami-accent, #ff9500);
+  background: var(--kwami-accent-gradient);
   box-shadow:
     2px 2px 6px var(--kwami-shadow-dark),
     -2px -2px 6px var(--kwami-shadow-light);
@@ -54,7 +54,7 @@
 }
 
 [data-theme='dark'] .kwami-checkbox input:checked + .kwami-checkbox-box {
-  background: var(--kwami-accent, #ff9500);
+  background: var(--kwami-accent-gradient);
 }
 
 .kwami-checkbox input:checked + .kwami-checkbox-box iconify-icon {
